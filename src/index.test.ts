@@ -124,7 +124,7 @@ describe("Testing the switch case transformer", () => {
 
 
 
-    describe("nested switches with breaks", () => {
+    describe("nested switches with breaks should both be transformed", () => {
         const result = applyTransformer(dedent(`
         let a,b = 2,5;
 
