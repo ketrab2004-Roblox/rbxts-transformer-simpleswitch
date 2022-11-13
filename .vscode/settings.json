@@ -8,6 +8,7 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
         "package.json": "package-lock.json",
+        "tsconfig.json": "jest.config.js",
         "README.md": "LICENSE"
     }
 }
