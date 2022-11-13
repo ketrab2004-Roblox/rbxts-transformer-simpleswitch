@@ -11,10 +11,6 @@
 		],
 		"esModuleInterop": true,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-
-        "plugins": [
-            {"transform": "./index.ts", "type": "raw"}
-        ]
+		"forceConsistentCasingInFileNames": true
 	}
 }
