@@ -67,13 +67,15 @@ describe("Testing the switch case transformer", () => {
         console.log(result);
 
         expect(result).toBe(dedent(`
-        let a = 2
-        // switch
-        if (a == 1) {
+        let a = 2;
+        //switch
+        if (a === 1) {
             console.log("one");
-        } elseif (a == 2) {
+        }
+        else if (a === 2) {
             console.log("two");
-        } else {
+        }
+        else {
             console.log("uhmmm???");
         }
         `));
