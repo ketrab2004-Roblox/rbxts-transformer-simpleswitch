@@ -121,4 +121,60 @@ describe("Testing the switch case transformer", () => {
             expect(matches?.length).toBeUndefined();
         });
     });
+
+
+
+    describe("nested switches with breaks", () => {
+        const result = applyTransformer(dedent(`
+        let a,b = 2,5;
+
+        switch (a) {
+            case 1:
+                switch (b) {
+                    case 3:
+                        console.log("thirteen");
+                        break;
+
+                    case 4:
+                        console.log("fourteen");
+                        breakl
+
+                    case 5:
+                        console.log("fifteen");
+                        break;
+
+                    default:
+                        console.log("one");
+                        break;
+                }
+                break;
+
+            case 2:
+                console.log("two");
+                break;
+
+            default:
+                console.log("uhmmm???");
+                break;
+        }
+        `));
+
+        console.log(result);
+
+        test("should contain '//switch' twice", async () => {
+            const matches = result.match(/\/\/switch/);
+
+            expect(matches?.length).toBe(2);
+        });
+
+        test("should contain 'else if'", async () =>
+            expect(result).toEqual( expect.stringContaining("else if") )
+        );
+
+        test("should contain 7 'if', 'else' or 'else if' statements", async () => {
+            const matches = result.match(/((else if)|else|if)/g);
+
+            expect(matches?.length).toBe(7);
+        });
+    });
 });
