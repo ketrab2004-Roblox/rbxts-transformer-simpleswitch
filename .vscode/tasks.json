@@ -1,0 +1,40 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "npm run build",
+            "group": "none",
+            "presentation": {
+                "panel": "shared",
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build & watch",
+            "type": "shell",
+            "command": "npm run watch",
+            "group": "none",
+            "presentation": {
+                "panel": "dedicated",
+                "reveal": "silent"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "npm run test",
+            "group": "none",
+            "presentation": {
+                "panel": "shared",
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
