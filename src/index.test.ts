@@ -40,11 +40,11 @@ function applyTransformer(code: string): string {
 }
 
 describe("Testing if jest works", () => {
-    test("true should be true", () =>
-        expect(true).toBeTruthy()
+    test("true should be true", async () =>
+        expect(true).toBe(true)
     );
 
-    test("false should not be true", () =>
+    test("false should not be truthy", async () =>
         expect(false).not.toBeTruthy()
     );
 });
@@ -69,17 +69,17 @@ describe("Testing the switch case transformer", () => {
         }
         `));
 
-        test("should contain '//switch' once", () => {
+        test("should contain '//switch' once", async () => {
             const matches = result.match(/\/\/switch/);
 
             expect(matches?.length).toBe(1);
         });
 
-        test("should contain 'else if'", () =>
+        test("should contain 'else if'", async () =>
             expect(result).toEqual( expect.stringContaining("else if") )
         );
 
-        test("should contain 3 'if', 'else' or 'else if' statements", () => {
+        test("should contain 3 'if', 'else' or 'else if' statements", async () => {
             const matches = result.match(/((else if)|else|if)/g);
 
             expect(matches?.length).toBe(3);
@@ -105,17 +105,17 @@ describe("Testing the switch case transformer", () => {
         }
         `));
 
-        test("should not contain '//switch'", () => {
+        test("should not contain '//switch'", async () => {
             const matches = result.match(/\/\/switch/);
 
             expect(matches?.length).toBeUndefined();
         });
 
-        test("should not contain 'else if'", () =>
+        test("should not contain 'else if'", async () =>
             expect(result).toEqual( expect.not.stringContaining("else if") )
         );
 
-        test("should contain no 'if', 'else' or 'else if' statements", () => {
+        test("should contain no 'if', 'else' or 'else if' statements", async () => {
             const matches = result.match(/((else if)|else|if)/g);
 
             expect(matches?.length).toBeUndefined();
