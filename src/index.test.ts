@@ -2,6 +2,25 @@ import * as ts from "typescript";
 import switchTransformer from "./index";
 
 
+function dedent(str: string): string {
+    let shortestWhitespace = Number.MAX_VALUE;
+
+    const lines = str.replace(/^\n/, '').split("\n");
+
+    lines.forEach(line => {
+        const match = line.match(/^ +/);
+
+        if (match && match[0].length < shortestWhitespace) {
+            shortestWhitespace = match[0].length;
+        }
+    });
+
+    const minWhitespace = " ".repeat(shortestWhitespace);
+
+    return lines.map(line => line.replace( new RegExp(`^${minWhitespace}`), '' )).join("\n");
+}
+
+
 const printer = ts.createPrinter({
     newLine: ts.NewLineKind.LineFeed,
     removeComments: false
@@ -27,7 +46,7 @@ describe("Testing the switch case transformer", () => {
     });
 
     test("An actual test", () => {
-        const result = applyTransformer(`
+        const result = applyTransformer(dedent(`
         let a = 2;
 
         switch (a) {
@@ -43,11 +62,11 @@ describe("Testing the switch case transformer", () => {
                 console.log("uhmmm???");
                 break;
         }
-        `);
+        `));
 
         console.log(result);
 
-        expect(result).toBe(`
+        expect(result).toBe(dedent(`
         let a = 2
         // switch
         if (a == 1) {
@@ -57,6 +76,6 @@ describe("Testing the switch case transformer", () => {
         } else {
             console.log("uhmmm???");
         }
-        `);
+        `));
     })
 });
