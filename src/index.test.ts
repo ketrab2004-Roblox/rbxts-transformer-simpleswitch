@@ -39,13 +39,18 @@ function applyTransformer(code: string): string {
     return printer.printNode(ts.EmitHint.SourceFile, result, sourceFile);
 }
 
+describe("Testing if jest works", () => {
+    test("true should be true", () =>
+        expect(true).toBeTruthy()
+    );
+
+    test("false should not be true", () =>
+        expect(false).not.toBeTruthy()
+    );
+});
 
 describe("Testing the switch case transformer", () => {
-    test("true should be true", () => {
-        expect(true).toBeTruthy();
-    });
-
-    test("An actual test", () => {
+    describe("switch with breaks should be transformed correctly", () => {
         const result = applyTransformer(dedent(`
         let a = 2;
 
@@ -64,18 +69,56 @@ describe("Testing the switch case transformer", () => {
         }
         `));
 
-        expect(result).toBe(dedent(`
+        test("should contain '//switch' once", () => {
+            const matches = result.match(/\/\/switch/);
+
+            expect(matches?.length).toBe(1);
+        });
+
+        test("should contain 'else if'", () =>
+            expect(result).toEqual( expect.stringContaining("else if") )
+        );
+
+        test("should contain 3 'if', 'else' or 'else if' statements", () => {
+            const matches = result.match(/((else if)|else|if)/g);
+
+            expect(matches?.length).toBe(3);
+        });
+    });
+
+
+    describe("switch with missing breaks should not be transformed", () => {
+        const result = applyTransformer(dedent(`
         let a = 2;
-        //switch
-        if (a === 1) {
-            console.log("one");
-        }
-        else if (a === 2) {
-            console.log("two");
-        }
-        else {
-            console.log("uhmmm???");
+
+        switch (a) {
+            case 1:
+                console.log("one");
+
+            case 2:
+                console.log("two");
+                break;
+
+            default:
+                console.log("uhmmm???");
+                break;
         }
         `));
-    })
+
+        test("should not contain '//switch'", () => {
+            const matches = result.match(/\/\/switch/);
+
+            expect(matches?.length).toBeUndefined();
+        });
+
+        test("should not contain 'else if'", () =>
+            expect(result).toEqual( expect.not.stringContaining("else if") )
+        );
+
+        test("should contain no 'if', 'else' or 'else if' statements", () => {
+            const matches = result.match(/((else if)|else|if)/g);
+
+            expect(matches?.length).toBeUndefined();
+        });
+    });
 });
