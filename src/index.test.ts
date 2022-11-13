@@ -64,8 +64,6 @@ describe("Testing the switch case transformer", () => {
         }
         `));
 
-        console.log(result);
-
         expect(result).toBe(dedent(`
         let a = 2;
         //switch

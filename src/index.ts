@@ -90,7 +90,7 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
 		// topBlock is default content, or last clause content
 		let topNode: ts.Block | ts.IfStatement = ts.factory.createBlock(defaultClause?.content ?? [], true);
 
-		clauses.forEach(clauseHolder => {
+		clauses.reverse().forEach(clauseHolder => {
 
 			let nextNode = ts.factory.createIfStatement(
 				ts.factory.createBinaryExpression(
