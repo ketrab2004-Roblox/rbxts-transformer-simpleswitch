@@ -31,16 +31,16 @@ switch (a) {
 ```lua
 local a = 2
 repeat
-	if a == 1 then
-		print("one")
-		break
-	end
-	if a == 2 then
-		print("two")
-		break
-	end
-	print("uhh what??")
-	break
+    if a == 1 then
+        print("one")
+        break
+    end
+    if a == 2 then
+        print("two")
+        break
+    end
+    print("uhh what??")
+    break
 until true
 ```
 </details>
