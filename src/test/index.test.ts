@@ -1,43 +1,6 @@
-import * as ts from "typescript";
-import switchTransformer from "./index";
+import applyTransformer from "./applyTransformer";
+import dedent from "./dedent";
 
-
-function dedent(str: string): string {
-    let shortestWhitespace = Number.MAX_VALUE;
-
-    const lines = str.replace(/^\n/, '').split("\n");
-
-    lines.forEach(line => {
-        const match = line.match(/^ +/);
-
-        if (match && match[0].length < shortestWhitespace) {
-            shortestWhitespace = match[0].length;
-        }
-    });
-
-    const minWhitespace = " ".repeat(shortestWhitespace);
-
-    return lines.map(line => line.replace( new RegExp(`^${minWhitespace}`), '' )).join("\n");
-}
-
-
-const printer = ts.createPrinter({
-    newLine: ts.NewLineKind.LineFeed,
-    removeComments: false
-});
-function applyTransformer(code: string): string {
-    const sourceFile = ts.createSourceFile(
-        "index.ts",
-        code,
-        ts.ScriptTarget.ES2015,
-        true,
-        ts.ScriptKind.TS
-    );
-
-    const result = switchTransformer(ts.nullTransformationContext)(sourceFile);
-
-    return printer.printNode(ts.EmitHint.SourceFile, result, sourceFile);
-}
 
 describe("Testing if jest works", () => {
     test("true should be true", async () =>
@@ -48,6 +11,7 @@ describe("Testing if jest works", () => {
         expect(false).not.toBeTruthy()
     );
 });
+
 
 describe("Testing the switch case transformer", () => {
     describe("switch with breaks should be transformed correctly", () => {
@@ -80,7 +44,7 @@ describe("Testing the switch case transformer", () => {
         );
 
         test("should contain 3 'if', 'else' or 'else if' statements", async () => {
-            const matches = result.match(/((else if *\()|else *\(|if *\()/g);
+            const matches = result.match(/((else if *\()|else *{|if *\()/g);
 
             expect(matches?.length).toBe(3);
         });
@@ -116,7 +80,7 @@ describe("Testing the switch case transformer", () => {
         );
 
         test("should contain no 'if', 'else' or 'else if' statements", async () => {
-            const matches = result.match(/((else if *\()|else *\(|if *\()/g);
+            const matches = result.match(/((else if *\()|else *{|if *\()/g);
 
             expect(matches?.length).toBeUndefined();
         });
@@ -171,7 +135,7 @@ describe("Testing the switch case transformer", () => {
         );
 
         test("should contain 7 'if', 'else' or 'else if' statements", async () => {
-            const matches = result.match(/((else if *\()|else *\(|if *\()/g);
+            const matches = result.match(/((else if *\()|else *{|if *\()/g);
 
             expect(matches?.length).toBe(7);
         });
