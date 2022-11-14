@@ -70,7 +70,7 @@ describe("Testing the switch case transformer", () => {
         `));
 
         test("should contain '//switch' once", async () => {
-            const matches = result.match(/\/\/switch/);
+            const matches = result.match(/\/\/switch/g);
 
             expect(matches?.length).toBe(1);
         });
@@ -80,7 +80,7 @@ describe("Testing the switch case transformer", () => {
         );
 
         test("should contain 3 'if', 'else' or 'else if' statements", async () => {
-            const matches = result.match(/((else if)|else|if)/g);
+            const matches = result.match(/((else if *\()|else *\(|if *\()/g);
 
             expect(matches?.length).toBe(3);
         });
@@ -106,7 +106,7 @@ describe("Testing the switch case transformer", () => {
         `));
 
         test("should not contain '//switch'", async () => {
-            const matches = result.match(/\/\/switch/);
+            const matches = result.match(/\/\/switch/g);
 
             expect(matches?.length).toBeUndefined();
         });
@@ -116,7 +116,7 @@ describe("Testing the switch case transformer", () => {
         );
 
         test("should contain no 'if', 'else' or 'else if' statements", async () => {
-            const matches = result.match(/((else if)|else|if)/g);
+            const matches = result.match(/((else if *\()|else *\(|if *\()/g);
 
             expect(matches?.length).toBeUndefined();
         });
@@ -126,7 +126,8 @@ describe("Testing the switch case transformer", () => {
 
     describe("nested switches with breaks should both be transformed", () => {
         const result = applyTransformer(dedent(`
-        let a,b = 2,5;
+        let a = 2,
+            b = 5;
 
         switch (a) {
             case 1:
@@ -137,7 +138,7 @@ describe("Testing the switch case transformer", () => {
 
                     case 4:
                         console.log("fourteen");
-                        breakl
+                        break;
 
                     case 5:
                         console.log("fifteen");
@@ -159,10 +160,8 @@ describe("Testing the switch case transformer", () => {
         }
         `));
 
-        console.log(result);
-
         test("should contain '//switch' twice", async () => {
-            const matches = result.match(/\/\/switch/);
+            const matches = result.match(/\/\/switch/g);
 
             expect(matches?.length).toBe(2);
         });
@@ -172,7 +171,7 @@ describe("Testing the switch case transformer", () => {
         );
 
         test("should contain 7 'if', 'else' or 'else if' statements", async () => {
-            const matches = result.match(/((else if)|else|if)/g);
+            const matches = result.match(/((else if *\()|else *\(|if *\()/g);
 
             expect(matches?.length).toBe(7);
         });
