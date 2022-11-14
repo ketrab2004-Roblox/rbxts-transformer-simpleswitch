@@ -84,7 +84,7 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
 
         if (!everyCaseClauseHasABreak) {
             // keep going like normal
-            return ts.visitEachChild(switchStatement, transformer(context), context);
+            return switchStatement;
         }
 
         // topBlock is default content, or last clause content
@@ -117,9 +117,12 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
             true
         );
 
+
         // go deeper like normal
-        return transformer(context)(topNode);
+        return ts.setOriginalNode(topNode, switchStatement);
     }
+
+
 
     return (node => ts.visitNode(node, visit)) as ts.Transformer<ts.SwitchStatement>;
 }
