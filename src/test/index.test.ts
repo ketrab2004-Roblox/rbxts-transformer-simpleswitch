@@ -1,10 +1,10 @@
 
-describe("Testing if jest works", () => {
-    test("true should be true", async () =>
-        expect(true).toBe(true)
+describe("testing whether jasmine works", async () => {
+    it("true should be true", async () =>
+        expect(true).toBeTrue()
     );
 
-    test("false should not be truthy", async () =>
+    it("false should not be truthy", async () =>
         expect(false).not.toBeTruthy()
     );
 });

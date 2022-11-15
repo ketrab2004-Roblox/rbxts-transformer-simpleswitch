@@ -3,7 +3,7 @@ import dedent from "../dedent";
 import { getSwitchCount, getIfElseCount } from "../helpers";
 
 
-describe("nested switches with breaks should both be transformed", () => {
+describe("nested switches with breaks should both be transformed", async () => {
     const result = applyTransformer(dedent(`
     let a = 2,
         b = 5;
@@ -39,15 +39,15 @@ describe("nested switches with breaks should both be transformed", () => {
     }
     `));
 
-    test("should contain '//switch' twice", async () => {
-        expect( getSwitchCount(result) ).toBe(2);
-    });
-
-    test("should contain 'else if'", async () =>
-        expect(result).toEqual( expect.stringContaining("else if") )
+    it("should contain '//switch' twice", async () =>
+        expect( getSwitchCount(result) ).toBe(2)
     );
 
-    test("should contain 7 'if', 'else' or 'else if' statements", async () => {
-        expect( getIfElseCount(result) ).toBe(7);
-    });
+    it("should contain 'else if'", async () =>
+        expect(result).toContain("else if")
+    );
+
+    it("should contain 7 'if', 'else' or 'else if' statements", async () =>
+        expect( getIfElseCount(result) ).toBe(7)
+    );
 });

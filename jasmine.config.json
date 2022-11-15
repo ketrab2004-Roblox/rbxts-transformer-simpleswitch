@@ -1,0 +1,13 @@
+{
+    "spec_dir": "src/test",
+    "spec_files": [
+        "**/*.{[tT]est,[sS]pec}.ts"
+    ],
+    "helpers": [
+        "**/*.[hH]elper.ts"
+    ],
+    "env": {
+        "stopSpecOnExpectationFailure": false,
+        "random": true
+    }
+}
