@@ -28,7 +28,18 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "npm run test",
+            "command": "npm test",
+            "group": "none",
+            "presentation": {
+                "panel": "shared",
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "test fancy",
+            "type": "shell",
+            "command": "npm run test:fancy",
             "group": "none",
             "presentation": {
                 "panel": "shared",
