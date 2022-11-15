@@ -1,5 +1,5 @@
 
-describe("testing whether jasmine works", async () => {
+describe("Test whether jasmine works", async () => {
     it("true should be true", async () =>
         expect(true).toBeTrue()
     );

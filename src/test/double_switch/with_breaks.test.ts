@@ -3,7 +3,7 @@ import dedent from "../dedent";
 import { getSwitchCount, getIfElseCount } from "../helpers";
 
 
-describe("nested switches with breaks should both be transformed", async () => {
+describe("Nested switches with breaks should both be transformed", async () => {
     const result = applyTransformer(dedent(`
     let a = 2,
         b = 5;
