@@ -2,7 +2,7 @@ import applyTransformer from "../applyTransformer";
 import dedent from "../dedent";
 
 
-export default async () => describe("with code after a break should not include said code", async () => {
+export default async () => describe("with multiple default clauses", async () => {
 
     it("should throw error or something", async () =>
         expect(

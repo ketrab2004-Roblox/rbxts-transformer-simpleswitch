@@ -51,7 +51,7 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
                     return node;
                 }
 
-                if (ts.isStatement(node)) {
+                if (ts.isStatement(node) && !caseBlockHasABreak) {
                     currentBlockContent.push(node);
                 } else {
                     throw new Error("Child of a CaseClause/DefaultClause is not a statement");
