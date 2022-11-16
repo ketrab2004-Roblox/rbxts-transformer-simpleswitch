@@ -6,4 +6,3 @@ describe("Single switch", async () => {
 
     missing_break();
 });
-
