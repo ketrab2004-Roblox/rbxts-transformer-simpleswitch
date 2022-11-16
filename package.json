@@ -9,7 +9,8 @@
     ],
     "version": "1.0.0",
     "author": "ketrab2004 (https://github.com/ketrab2004)",
-    "license": "LGPL-3.0-or-later",
+    "license": "MPL-2.0",
+    "repository": "github:ketrab2004-Roblox/rbxts-transformer-simpleswitch",
     "main": "out/index.js",
     "scripts": {
         "build": "tsc",
