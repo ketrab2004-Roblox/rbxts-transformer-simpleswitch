@@ -71,6 +71,10 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
                         content: currentBlockContent
                     })
                 } else {
+                    if (defaultClause) {
+                        throw new Error("SwitchStatement has multiple DefaultClauses");
+                    }
+
                     defaultClause = {
                         case: caseBlock,
                         content: currentBlockContent
