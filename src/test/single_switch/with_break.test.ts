@@ -3,7 +3,7 @@ import dedent from "../dedent";
 import { getSwitchCount, getIfElseCount } from "../helpers";
 
 
-describe("Switch with breaks should be transformed correctly", async () => {
+export default async () => describe("with breaks should be transformed correctly", async () => {
     const result = applyTransformer(dedent(`
     let a = 2;
 
