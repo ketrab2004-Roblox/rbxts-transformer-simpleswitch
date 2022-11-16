@@ -3,7 +3,7 @@ import dedent from "../dedent";
 import { getSwitchCount, getIfElseCount } from "../helpers";
 
 
-export default async () => describe("with breaks should transform both", async () => {
+export default async () => describe("with missing outer breaks should only transform the inner switch", async () => {
     const result = applyTransformer(dedent(`
     let a = 2,
         b = 5;
@@ -20,14 +20,12 @@ export default async () => describe("with breaks should transform both", async (
                     break;
 
                 case 5:
-                    console.log("fifteen");
-                    break;
+                    console.log("five");
 
                 default:
                     console.log("one");
                     break;
             }
-            break;
 
         case 2:
             console.log("two");
@@ -39,15 +37,15 @@ export default async () => describe("with breaks should transform both", async (
     }
     `));
 
-    it("should contain '//switch' twice", async () =>
-        expect( getSwitchCount(result) ).toBe(2)
+    it("should contain no '//switch'", async () =>
+        expect( getSwitchCount(result) ).toBe(0)
     );
 
-    it("should contain 'else if'", async () =>
-        expect(result).toContain("else if")
+    it("should not contain 'else if'", async () =>
+        expect(result).not.toContain("else if")
     );
 
-    it("should contain 7 'if', 'else' or 'else if' statements", async () =>
-        expect( getIfElseCount(result) ).toBe(7)
+    it("should contain no 'if', 'else' or 'else if' statements", async () =>
+        expect( getIfElseCount(result) ).toBe(0)
     );
 });
