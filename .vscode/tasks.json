@@ -5,6 +5,10 @@
     "tasks": [
         {
             "label": "build",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiYellow"
+            },
             "type": "shell",
             "command": "npm run build",
             "group": "none",
@@ -15,20 +19,16 @@
             "problemMatcher": []
         },
         {
-            "label": "build & watch",
-            "type": "shell",
-            "command": "npm run watch",
-            "group": "none",
-            "presentation": {
-                "panel": "dedicated",
-                "reveal": "silent"
+            "label": "build example",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiMagenta"
             },
-            "problemMatcher": []
-        },
-        {
-            "label": "test",
             "type": "shell",
-            "command": "npm test",
+            "options": {
+                "cwd": "${cwd}/example"
+            },
+            "command": "npm run build",
             "group": "none",
             "presentation": {
                 "panel": "shared",
@@ -37,10 +37,32 @@
             "problemMatcher": []
         },
         {
+            "label": "test",
+            "icon": {
+                "id": "beaker",
+                "color": "terminal.ansiBlue"
+            },
+            "type": "shell",
+            "command": "npm test",
+            "group": "test",
+            "presentation": {
+                "panel": "shared",
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "test fancy",
+            "icon": {
+                "id": "beaker",
+                "color": "terminal.ansiCyan"
+            },
             "type": "shell",
             "command": "npm run test:fancy",
-            "group": "none",
+            "group": {
+                "isDefault": true,
+                "kind": "test"
+            },
             "presentation": {
                 "panel": "shared",
                 "reveal": "always"

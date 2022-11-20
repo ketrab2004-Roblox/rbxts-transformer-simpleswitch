@@ -1,0 +1,22 @@
+{
+    "private": true,
+    "name": "rbxts-transformer-switchcase_example",
+    "version": "1.0.0",
+    "description": "Example for the rbxts-transformer-switchcase",
+    "main": "index.js",
+    "scripts": {
+        "build:parent": "cd .. && npm run build && cd example",
+        "prebuild": "npm run build:parent",
+        "build": "rbxtsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@rbxts/compiler-types": "^2.0.4-types.0",
+        "@rbxts/types": "^1.0.647",
+        "rbxts-transformer-switchcase": "file:..",
+        "typescript": "^4.9.3",
+        "@rbxts/services": "^1.5.1"
+    }
+}
