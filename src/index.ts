@@ -2,30 +2,47 @@ import * as ts from "typescript";
 import {} from "ts-expose-internals";
 
 
+interface transformerConfig {
+};
+
+
+const main = (program: ts.Program, config?: any): ts.TransformerFactory<ts.SourceFile> => {
+
+    return context => { // transformer factory
+        const former = transformer(context);
+
+        return (sourceFile: ts.SourceFile) => { // transformer
+            return former(sourceFile) as ts.SourceFile;
+        }
+    };
+}
+
+
 /**
  * Transformer entry point
  */
 const transformer: ts.TransformerFactory<ts.Node> = context => {
-    const visit: ts.Visitor = node => {
+    const switchFormer = parseSwitchStatement(context);
+
+    const visitor: ts.Visitor = node => {
 
         if (ts.isSwitchStatement(node)) {
-            node = parseSwitchStatement(context)(node);
+            node = switchFormer(node);
         }
 
-        return ts.visitEachChild(node, child => visit(child), context);
+        return ts.visitEachChild(node, visitor, context);
     };
 
-    return (node => ts.visitNode(node, visit)) as ts.Transformer<ts.Node>;
+    return (node => ts.visitEachChild(node, visitor, context)) as ts.Transformer<ts.Node>;
 }
 
 
 const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context => {
-    const visit: ts.Visitor = switchStatement => {
+    const visitor: ts.Visitor = switchStatement => {
 
         if (!ts.isSwitchStatement(switchStatement)) {
             throw new Error("Called parseSwitchStatement on a none-switchStatement node");
         }
-
 
         const clauses: {case: ts.CaseClause, content: ts.Statement[]}[] = [];
         let defaultClause: {case: ts.DefaultClause, content: ts.Statement[]} | undefined;
@@ -51,10 +68,8 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
                     return node;
                 }
 
-                if (ts.isStatement(node) && !caseBlockHasABreak) {
+                if (!caseBlockHasABreak) {
                     currentBlockContent.push(node);
-                } else {
-                    throw new Error("Child of a CaseClause/DefaultClause is not a statement");
                 }
 
                 return node;
@@ -126,10 +141,8 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
         return ts.setOriginalNode(topNode, switchStatement);
     }
 
-
-
-    return (node => ts.visitNode(node, visit)) as ts.Transformer<ts.SwitchStatement>;
+    return (node => ts.visitNode(node, visitor)) as ts.Transformer<ts.SwitchStatement>;
 }
 
 
-export default transformer;
+export default main;

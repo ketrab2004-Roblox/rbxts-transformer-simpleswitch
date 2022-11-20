@@ -1,10 +1,15 @@
 import * as ts from "typescript";
 import switchTransformer from "../index";
 
-const printer = ts.createPrinter({
-    newLine: ts.NewLineKind.LineFeed,
-    removeComments: false
+
+const program = ts.createProgram({
+    rootNames: ["src"],
+    options: {
+        newLine: ts.NewLineKind.LineFeed,
+        removeComments: false
+    }
 });
+const printer = ts.createPrinter(program.getCompilerOptions());
 
 export default function applyTransformer(code: string): string {
     const sourceFile = ts.createSourceFile(
@@ -15,7 +20,9 @@ export default function applyTransformer(code: string): string {
         ts.ScriptKind.TS
     );
 
-    const result = switchTransformer(ts.nullTransformationContext)(sourceFile);
+    const result = switchTransformer(program)(ts.nullTransformationContext)(sourceFile);
 
-    return printer.printNode(ts.EmitHint.SourceFile, result, sourceFile);
+    const resultText = printer.printNode(ts.EmitHint.SourceFile, result, sourceFile);
+
+    return resultText;
 }

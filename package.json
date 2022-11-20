@@ -14,12 +14,12 @@
     "main": "out/index.js",
     "scripts": {
         "build": "tsc",
-        "watch": "tsc -w",
         "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.config.json",
-        "test:fancy": "ts-node node_modules/jasmine/bin/jasmine --reporter=jasmine-console-reporter --config=jasmine.config.json"
+        "test:fancy": "ts-node node_modules/jasmine/bin/jasmine --reporter=jasmine-console-reporter --config=jasmine.config.json",
+        "prepublishOnly": "npm run test && npm run build"
     },
     "dependencies": {
-        "typescript": "^4.8.4"
+        "typescript": "=4.8.3"
     },
     "devDependencies": {
         "@types/jasmine": "^4.3.0",
