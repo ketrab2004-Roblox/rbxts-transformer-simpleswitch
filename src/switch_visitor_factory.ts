@@ -2,6 +2,8 @@ import * as ts from "typescript";
 import {} from "ts-expose-internals";
 
 import type { VisitorFactory, Visitor } from "./index";
+import switch_clause_visitor from "./switch_clause_visitor";
+
 
 const switchVisitorFactory: VisitorFactory<ts.SwitchStatement> = context => {
     const switchVisitor: Visitor<ts.SwitchStatement> = switchStatement => {
@@ -10,75 +12,9 @@ const switchVisitorFactory: VisitorFactory<ts.SwitchStatement> = context => {
             throw new Error("Called parseSwitchStatement on a none-switchStatement node");
         }
 
-        const clauses: {case: ts.CaseClause, content: ts.Statement[]}[] = [];
-        let defaultClause: {case: ts.DefaultClause, content: ts.Statement[]} | undefined;
-
-        let everyCaseClauseHasABreak = true;
-        // go through every case to see if they all use a break statement
-        ts.visitEachChild(switchStatement.caseBlock, caseBlock => {
-
-            if (!(ts.isCaseClause(caseBlock) || ts.isDefaultClause(caseBlock))) {
-                throw new Error(`Child of CaseBlock is neither a CaseClause nor a DefaultClause`);
-            }
-
-            let caseBlockHasABreak = false;
-            const currentBlockContent: ts.Statement[] = [];
-
-            // go through every node in this case, to see if one is a break statement
-            caseBlock.statements.forEach(node => {
-
-                if (ts.isBreakStatement(node)) {
-                    caseBlockHasABreak = true;
-
-                    if (!context.config.disableBreakComments) {
-                        // create empty statement, because .addSyntheticTrailingComment() doesn't work
-                        const lastNode = ts.factory.createEmptyStatement();
-
-                        ts.addSyntheticLeadingComment(
-                            lastNode,
-                            ts.SyntaxKind.SingleLineCommentTrivia,
-                            "break",
-                            true
-                        );
-
-                        currentBlockContent.push(lastNode);
-                    }
-
-                    // only add nodes before the first break to the list (below)
-                    return;
-                }
-
-                if (!caseBlockHasABreak) {
-                    currentBlockContent.push(node);
-                }
-
-            }, context);
-
-            // if no break was found, every becomes false
-            // if it's already false it won't change
-            everyCaseClauseHasABreak &&= caseBlockHasABreak;
-
-            if (everyCaseClauseHasABreak) {
-                if (ts.isCaseClause(caseBlock)) {
-                    clauses.push({
-                        case: caseBlock,
-                        content: currentBlockContent
-                    })
-                } else {
-                    if (defaultClause) {
-                        throw new Error("SwitchStatement has multiple DefaultClauses");
-                    }
-
-                    defaultClause = {
-                        case: caseBlock,
-                        content: currentBlockContent
-                    }
-                }
-            }
-
-            return caseBlock;
-        }, context.context);
-
+        // parse each clause, to see if it can be converted to ifs
+        // and to get the statement contents of each clause
+        const {everyCaseClauseHasABreak, clauses, defaultClause} = switch_clause_visitor(context, switchStatement);
 
         if (!everyCaseClauseHasABreak) {
             // keep going like normal
