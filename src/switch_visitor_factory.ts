@@ -30,6 +30,20 @@ const switchVisitorFactory: VisitorFactory<ts.SwitchStatement> = context => {
                 if (ts.isBreakStatement(node)) {
                     caseBlockHasABreak = true;
 
+                    if (!context.config.disableBreakComments) {
+                        // create empty statement, because .addSyntheticTrailingComment() doesn't work
+                        const lastNode = ts.factory.createEmptyStatement();
+
+                        ts.addSyntheticLeadingComment(
+                            lastNode,
+                            ts.SyntaxKind.SingleLineCommentTrivia,
+                            "break",
+                            true
+                        );
+
+                        currentBlockContent.push(lastNode);
+                    }
+
                     // only add nodes before the first break to the list (below)
                     return;
                 }
@@ -94,13 +108,15 @@ const switchVisitorFactory: VisitorFactory<ts.SwitchStatement> = context => {
 
 
         if (topNode != undefined) {
-            // add 'switch' comment
-            ts.addSyntheticLeadingComment(
-                topNode,
-                ts.SyntaxKind.SingleLineCommentTrivia,
-                "switch",
-                true
-            );
+            // add 'switch' comment (if not disabled)
+            if (!context.config.disableSwitchComments) {
+                ts.addSyntheticLeadingComment(
+                    topNode,
+                    ts.SyntaxKind.SingleLineCommentTrivia,
+                    "switch",
+                    true
+                );
+            }
 
             // go deeper like normal
             return ts.setOriginalNode(topNode, switchStatement);
