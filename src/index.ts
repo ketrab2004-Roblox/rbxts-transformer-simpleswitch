@@ -107,7 +107,7 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
         }
 
         // topBlock is default content, or last clause content
-        let topNode: ts.Block | ts.IfStatement = ts.factory.createBlock(defaultClause?.content ?? [], true);
+        let topNode: ts.Block | ts.IfStatement | undefined = defaultClause ? ts.factory.createBlock(defaultClause?.content ?? [], true) : undefined;
 
         clauses.reverse().forEach(clauseHolder => {
 
@@ -124,21 +124,23 @@ const parseSwitchStatement: ts.TransformerFactory<ts.SwitchStatement> = context 
             );
 
             topNode = nextNode;
-
         });
 
 
         // add 'switch' comment
-        ts.addSyntheticLeadingComment(
-            topNode,
-            ts.SyntaxKind.SingleLineCommentTrivia,
-            "switch",
-            true
-        );
+        if (topNode) {
+            ts.addSyntheticLeadingComment(
+                topNode,
+                ts.SyntaxKind.SingleLineCommentTrivia,
+                "switch",
+                true
+            );
 
+            // go deeper like normal
+            return ts.setOriginalNode(topNode, switchStatement);
+        }
 
-        // go deeper like normal
-        return ts.setOriginalNode(topNode, switchStatement);
+        throw new Error("Failed to convert switch statement to if else chain, switch statement is empty")
     }
 
     return (node => ts.visitNode(node, visitor)) as ts.Transformer<ts.SwitchStatement>;
