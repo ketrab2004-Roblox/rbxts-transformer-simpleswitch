@@ -1,6 +1,6 @@
 # rbxts-transformer-switchcase
 
-Does some funny switchcase stuff, to make it faster(?) and to make it easier to read.
+Converts switch cases into simple if else blocks, to make it [faster](./speed_test/) and to make it more legible.
 
 ## Example
 <details>
