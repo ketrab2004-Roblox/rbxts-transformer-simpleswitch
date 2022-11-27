@@ -2,6 +2,7 @@ import * as ts from "typescript";
 import {} from "ts-expose-internals";
 
 import type { TransformerContext } from "./index";
+import clause_statements_visitor from "./switch_clause_statements_visitor";
 
 interface ClauseHolder<T extends ts.CaseClause | ts.DefaultClause = ts.CaseClause> {
     case: T,
@@ -27,38 +28,7 @@ function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchSt
             throw new Error(`Child of CaseBlock is neither a CaseClause nor a DefaultClause`);
         }
 
-        let caseBlockHasABreak = false;
-        const currentBlockContent: ts.Statement[] = [];
-
-        // go through every node in this case, to see if one is a break statement
-        caseBlock.statements.forEach(node => {
-
-            if (ts.isBreakStatement(node)) {
-                caseBlockHasABreak = true;
-
-                if (!context.config.disableBreakComments) {
-                    // create empty statement, because .addSyntheticTrailingComment() doesn't work
-                    const lastNode = ts.factory.createEmptyStatement();
-
-                    ts.addSyntheticLeadingComment(
-                        lastNode,
-                        ts.SyntaxKind.SingleLineCommentTrivia,
-                        "break",
-                        true
-                    );
-
-                    currentBlockContent.push(lastNode);
-                }
-
-                // only add nodes before the first break to the list (below)
-                return;
-            }
-
-            if (!caseBlockHasABreak) {
-                currentBlockContent.push(node);
-            }
-
-        }, context);
+        const {hasABreak: caseBlockHasABreak, statements: currentBlockContent} = clause_statements_visitor(context, caseBlock);
 
         // if no break was found, every becomes false
         // if it's already false it won't change
