@@ -5,6 +5,10 @@ import type { VisitorFactory, Visitor } from "./index";
 import switchVisitorFactory from "./switch_visitor_factory";
 
 
+/**
+ * Visits every node in a sourceFile,
+ * if a node is a switch it makes it go through the switch visitor.
+ */
 const mainVistorFactory: VisitorFactory = context => {
     const switchVisitor = switchVisitorFactory(context);
 

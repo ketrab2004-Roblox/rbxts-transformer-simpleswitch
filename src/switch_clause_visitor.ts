@@ -2,9 +2,9 @@ import * as ts from "typescript";
 import {} from "ts-expose-internals";
 
 import type { TransformerContext } from "./index";
-import clause_statements_visitor from "./switch_clause_statements_visitor";
+import clause_statements_visitor from "./clause_statements_visitor";
 
-interface ClauseHolder<T extends ts.CaseClause | ts.DefaultClause = ts.CaseClause> {
+interface ClauseHolder<T extends ts.CaseOrDefaultClause = ts.CaseClause> {
     case: T,
     content: ts.Statement[]
 }
@@ -15,6 +15,11 @@ interface ClauseVisitorResult {
 }
 
 
+/**
+ * Goes through each clause in a switch statement using the clauseStatementsVisitor,
+ * to see whether each clause escapes and to get all its statements.
+ * @returns every clause with it's content, along with a boolean indicating whether every clause escapes.
+ */
 function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchStatement): ClauseVisitorResult {
     const toReturn: ClauseVisitorResult = {
         clauses: [],
@@ -23,22 +28,18 @@ function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchSt
     }
 
     // go through every clause to see if they all use a break statement
-    ts.visitEachChild(switchStatement.caseBlock, caseBlock => {
-        if (!(ts.isCaseClause(caseBlock) || ts.isDefaultClause(caseBlock))) {
-            throw new Error(`Child of CaseBlock is neither a CaseClause nor a DefaultClause`);
-        }
-
-        const {hasABreak: caseBlockHasABreak, statements: currentBlockContent} = clause_statements_visitor(context, caseBlock);
+    switchStatement.caseBlock.clauses.forEach(clause => {
+        const {hasABreak: clauseHasABreak, statements: currentClauseContent} = clause_statements_visitor(context, clause);
 
         // if no break was found, every becomes false
         // if it's already false it won't change
-        toReturn.everyCaseClauseHasABreak &&= caseBlockHasABreak;
+        toReturn.everyCaseClauseHasABreak &&= clauseHasABreak;
 
         if (toReturn.everyCaseClauseHasABreak) {
-            if (ts.isCaseClause(caseBlock)) {
+            if (ts.isCaseClause(clause)) {
                 toReturn.clauses.push({
-                    case: caseBlock,
-                    content: currentBlockContent
+                    case: clause,
+                    content: currentClauseContent
                 })
             } else {
                 if (toReturn.defaultClause) {
@@ -46,14 +47,12 @@ function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchSt
                 }
 
                 toReturn.defaultClause = {
-                    case: caseBlock,
-                    content: currentBlockContent
+                    case: clause,
+                    content: currentClauseContent
                 }
             }
         }
-
-        return caseBlock;
-    }, context.context);
+    });
 
     return toReturn;
 }

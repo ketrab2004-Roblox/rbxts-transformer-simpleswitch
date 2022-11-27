@@ -28,6 +28,10 @@ export type Visitor<T extends ts.Node = ts.Node> = (node: T) => ts.Node;
 export type StrictVisitor<T extends ts.Node = ts.Node> = (node: T) => T;
 
 
+/**
+ * The starting point of the transformer.
+ * Sets up the mainVisitor.
+ */
 const main = (program: ts.Program, config?: TransformerConfig): ts.TransformerFactory<ts.SourceFile> => {
 
     //TODO validate config

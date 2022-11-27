@@ -5,12 +5,13 @@ import type { VisitorFactory, Visitor } from "./index";
 import switch_clause_visitor from "./switch_clause_visitor";
 
 
+/**
+ * Goes through every clause in a switch statement
+ * to check whether each clause escapes using the switchClauseVisitor.
+ * If every clause does, then it rebuilds everything into an if else chain.
+ */
 const switchVisitorFactory: VisitorFactory<ts.SwitchStatement> = context => {
     const switchVisitor: Visitor<ts.SwitchStatement> = switchStatement => {
-
-        if (!ts.isSwitchStatement(switchStatement)) {
-            throw new Error("Called parseSwitchStatement on a none-switchStatement node");
-        }
 
         // parse each clause, to see if it can be converted to ifs
         // and to get the statement contents of each clause
