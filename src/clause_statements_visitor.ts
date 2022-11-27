@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import {} from "ts-expose-internals";
 
 import type { TransformerContext } from "./index";
-import hasOrIsEscape from "./escape_finder";
+import statementHasOrIsEscape from "./escape_finder";
 
 interface ClauseStatementsVisitorResult {
     hasABreak: boolean,
@@ -14,14 +14,14 @@ interface ClauseStatementsVisitorResult {
  * Goes through all the statements in a clause to see if one of them is an escape (using hasOrIsEscape).
  * @returns whether the clause escapes and whether
  */
-function clauseStatementsVisitor(context: TransformerContext, clause: ts.CaseOrDefaultClause): ClauseStatementsVisitorResult {
+export function clauseStatementsVisitor(context: TransformerContext, clause: ts.CaseOrDefaultClause): ClauseStatementsVisitorResult {
     const toReturn: ClauseStatementsVisitorResult = {
         hasABreak: false,
         statements: []
     };
 
     clause.statements.forEach(node => {
-        if (hasOrIsEscape(context, node)) {
+        if (statementHasOrIsEscape(context, node)) {
             toReturn.hasABreak = true;
 
             // only replace actual break statements with comments, if not disabled
@@ -50,5 +50,6 @@ function clauseStatementsVisitor(context: TransformerContext, clause: ts.CaseOrD
 
     return toReturn;
 }
+
 
 export default clauseStatementsVisitor;

@@ -90,4 +90,5 @@ export function recursiveStatementHasEscape(context: TransformerContext, nodeToR
     return foundBreak;
 }
 
+
 export default statementHasOrIsEscape;

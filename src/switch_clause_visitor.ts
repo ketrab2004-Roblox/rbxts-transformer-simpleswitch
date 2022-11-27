@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import {} from "ts-expose-internals";
 
 import type { TransformerContext } from "./index";
-import clause_statements_visitor from "./clause_statements_visitor";
+import clauseStatementsVisitor from "./clause_statements_visitor";
 
 interface ClauseHolder<T extends ts.CaseOrDefaultClause = ts.CaseClause> {
     case: T,
@@ -20,7 +20,7 @@ interface ClauseVisitorResult {
  * to see whether each clause escapes and to get all its statements.
  * @returns every clause with it's content, along with a boolean indicating whether every clause escapes.
  */
-function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchStatement): ClauseVisitorResult {
+export function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchStatement): ClauseVisitorResult {
     const toReturn: ClauseVisitorResult = {
         clauses: [],
         defaultClause: undefined,
@@ -29,7 +29,7 @@ function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchSt
 
     // go through every clause to see if they all use a break statement
     switchStatement.caseBlock.clauses.forEach(clause => {
-        const {hasABreak: clauseHasABreak, statements: currentClauseContent} = clause_statements_visitor(context, clause);
+        const {hasABreak: clauseHasABreak, statements: currentClauseContent} = clauseStatementsVisitor(context, clause);
 
         // if no break was found, every becomes false
         // if it's already false it won't change
@@ -56,5 +56,6 @@ function clauseVisitor(context: TransformerContext, switchStatement: ts.SwitchSt
 
     return toReturn;
 }
+
 
 export default clauseVisitor;

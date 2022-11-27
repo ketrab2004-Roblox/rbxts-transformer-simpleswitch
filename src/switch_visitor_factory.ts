@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import {} from "ts-expose-internals";
 
 import type { VisitorFactory, Visitor } from "./index";
-import switch_clause_visitor from "./switch_clause_visitor";
+import clauseVisitor from "./switch_clause_visitor";
 
 
 /**
@@ -10,12 +10,12 @@ import switch_clause_visitor from "./switch_clause_visitor";
  * to check whether each clause escapes using the switchClauseVisitor.
  * If every clause does, then it rebuilds everything into an if else chain.
  */
-const switchVisitorFactory: VisitorFactory<ts.SwitchStatement> = context => {
+export const switchVisitorFactory: VisitorFactory<ts.SwitchStatement> = context => {
     const switchVisitor: Visitor<ts.SwitchStatement> = switchStatement => {
 
         // parse each clause, to see if it can be converted to ifs
         // and to get the statement contents of each clause
-        const {everyCaseClauseHasABreak, clauses, defaultClause} = switch_clause_visitor(context, switchStatement);
+        const {everyCaseClauseHasABreak, clauses, defaultClause} = clauseVisitor(context, switchStatement);
 
         if (!everyCaseClauseHasABreak) {
             // keep going like normal

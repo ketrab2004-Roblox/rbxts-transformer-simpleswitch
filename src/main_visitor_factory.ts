@@ -9,7 +9,7 @@ import switchVisitorFactory from "./switch_visitor_factory";
  * Visits every node in a sourceFile,
  * if a node is a switch it makes it go through the switch visitor.
  */
-const mainVistorFactory: VisitorFactory = context => {
+export const mainVisitorFactory: VisitorFactory = context => {
     const switchVisitor = switchVisitorFactory(context);
 
     const visitor: Visitor = node => {
@@ -25,4 +25,4 @@ const mainVistorFactory: VisitorFactory = context => {
 }
 
 
-export default mainVistorFactory;
+export default mainVisitorFactory;
