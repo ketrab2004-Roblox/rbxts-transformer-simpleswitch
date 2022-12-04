@@ -41,6 +41,13 @@ jobs:
       if: ${{ failure() && steps.test.conclusion == 'failure' }}
       run: npm run test:fancy
 
-    - name: Build
+    - name: Install dependencies for the example
       if: ${{ !(failure() && steps.test.conclusion == 'failure') }}
+      working-directory: example
+      run: npm ci
+
+    # npm run build in the example directory also builds the transformer itself
+    - name: Build example
+      if: ${{ !(failure() && steps.test.conclusion == 'failure') }}
+      working-directory: example
       run: npm run build
