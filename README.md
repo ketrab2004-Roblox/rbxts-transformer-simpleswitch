@@ -1,4 +1,5 @@
 # rbxts-transformer-switchcase
+![npm version](https://img.shields.io/npm/v/rbxts-transformer-switchcase?label=npm) ![npm license](https://img.shields.io/npm/l/rbxts-transformer-switchcase) [![npm test](https://github.com/ketrab2004-Roblox/rbxts-transformer-simpleswitch/actions/workflows/test.yaml/badge.svg?branch=main&event=push)](https://github.com/ketrab2004-Roblox/rbxts-transformer-simpleswitch/actions/workflows/test.yaml)
 
 Converts switch cases into simple if else blocks, to make it [faster](./speed_test/) and to make it more legible.
 
@@ -84,7 +85,7 @@ end
 1. Try it out
 
 ## Settings
-In the `tsconfig.json` you can add settings for the plugin
+In the `tsconfig.json` you can add settings for the plugin.
 <details>
 <summary>Example</summary>
 
@@ -110,4 +111,14 @@ In the `tsconfig.json` you can add settings for the plugin
 | `disableBreakComments` | boolean | false | whether or not removed break statements should get a `--break` in their place |
 
 ## Building
-TODO
+### Setup
+Install dependencies using `npm i`.
+
+### Build the transformer
+Run `npm run build` in the root of the project.
+
+### Build the example
+Run `npm run build` in `/example`.
+
+### Run tests
+Run `npm run test` for quick and simple tests and `npm run test:fancy` for more readable results.
