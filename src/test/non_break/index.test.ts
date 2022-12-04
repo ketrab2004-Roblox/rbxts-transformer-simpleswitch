@@ -7,7 +7,7 @@ import return_inside_func from "./return_inside_inner_func.test";
 import continue_inside_func from "./continue_inside_inner_func.test";
 import return_inside_if from "./return_inside_inner_if.test";
 
-fdescribe("Non break statements", async () => {
+describe("Non break statements", async () => {
     continue_escape();
 
     return_escape();
