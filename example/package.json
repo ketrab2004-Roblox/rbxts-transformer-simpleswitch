@@ -17,6 +17,7 @@
         "@rbxts/types": "^1.0.647",
         "rbxts-transformer-switchcase": "file:..",
         "typescript": "^4.9.3",
-        "@rbxts/services": "^1.5.1"
+        "@rbxts/services": "^1.5.1",
+        "roblox-ts": "^2.0.4"
     }
 }
